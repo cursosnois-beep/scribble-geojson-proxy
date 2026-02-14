@@ -15,13 +15,12 @@ app.get("/", (req, res) => {
   res.type("text").send("OK ✅ Use /geojson?id=vhy0OQ3skk");
 });
 
-app.get("/geojson", async (req, res) => {
+app.get(/^\/geojson\/?$/, async (req, res) => {
   try {
     const id = req.query.id;
     if (!id) return res.status(400).send("Missing ?id=");
 
     const target = `https://www.scribblemaps.com/api/maps/${id}/geojson`;
-
     const r = await fetch(target);
     const body = await r.text();
 
@@ -31,7 +30,7 @@ app.get("/geojson", async (req, res) => {
     res.setHeader("Cache-Control", "public, max-age=60");
 
     res.status(r.status).send(body);
-  } catch (e) {
+  } catch {
     res.status(500).send("Proxy error");
   }
 });
